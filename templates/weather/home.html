@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>Weather Forecast | Cairo</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        min-height: 100vh;
+        background:
+            radial-gradient(circle at 15% 20%, rgba(14, 165, 233, 0.18), transparent 35%),
+            radial-gradient(circle at 85% 80%, rgba(99, 102, 241, 0.15), transparent 35%),
+            #080f1e;
+        color: #f8fafc;
+        padding: 40px 20px;
+    }
+
+    .container {
+        max-width: 1050px;
+        margin: auto;
+    }
+
+    /* Header */
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 45px;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .logo-icon {
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #38bdf8, #6366f1);
+        border-radius: 14px;
+        font-size: 23px;
+    }
+
+    .logo h2 {
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .logo span {
+        color: #38bdf8;
+    }
+
+    .status {
+        font-size: 12px;
+        color: #4ade80;
+        background: rgba(74, 222, 128, 0.08);
+        border: 1px solid rgba(74, 222, 128, 0.2);
+        padding: 9px 15px;
+        border-radius: 30px;
+    }
+
+    /* Main Layout */
+
+    .dashboard {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 25px;
+    }
+
+    .card {
+        background: rgba(255, 255, 255, 0.045);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 24px;
+        padding: 32px;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .section-label {
+        color: #94a3b8;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    /* Weather Card */
+
+    .weather-card {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .weather-card::after {
+        content: "☀";
+        position: absolute;
+        right: 30px;
+        top: 65px;
+        font-size: 145px;
+        color: rgba(56, 189, 248, 0.08);
+        pointer-events: none;
+    }
+
+    .city {
+        font-size: 30px;
+        font-weight: 700;
+        margin-top: 18px;
+    }
+
+    .country {
+        color: #94a3b8;
+        margin-top: 7px;
+        font-size: 14px;
+    }
+
+    .weather-display {
+        margin-top: 40px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .weather-symbol {
+        font-size: 65px;
+    }
+
+    .temperature {
+        font-size: 76px;
+        font-weight: 800;
+        letter-spacing: -5px;
+        line-height: 1;
+    }
+
+    .temperature span {
+        font-size: 32px;
+        color: #38bdf8;
+        vertical-align: top;
+        letter-spacing: 0;
+    }
+
+    .weather-description {
+        color: #94a3b8;
+        margin-top: 12px;
+        font-size: 14px;
+    }
+
+    /* Forecast Form */
+
+    .form-card h2 {
+        font-size: 22px;
+        margin: 15px 0 10px;
+    }
+
+    .form-description {
+        color: #94a3b8;
+        font-size: 13px;
+        line-height: 1.7;
+        margin-bottom: 30px;
+    }
+
+    label {
+        display: block;
+        color: #cbd5e1;
+        font-size: 13px;
+        margin-bottom: 12px;
+        font-weight: 600;
+    }
+
+    input[type="date"] {
+        width: 100%;
+        padding: 16px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: #111c30;
+        color: white;
+        font-family: inherit;
+        font-size: 14px;
+        outline: none;
+        margin-bottom: 22px;
+        color-scheme: dark;
+    }
+
+    input[type="date"]:focus {
+        border-color: #38bdf8;
+    }
+
+    button {
+        width: 100%;
+        padding: 16px;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #0ea5e9, #6366f1);
+        color: white;
+        font-size: 14px;
+        font-weight: 700;
+        font-family: inherit;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(14, 165, 233, 0.25);
+    }
+
+    /* Prediction Result */
+
+    .result-card {
+        grid-column: 1 / -1;
+        margin-top: 5px;
+    }
+
+    .result-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .result-header h2 {
+        font-size: 20px;
+    }
+
+    .result-badge {
+        color: #4ade80;
+        background: rgba(74, 222, 128, 0.08);
+        padding: 8px 13px;
+        border-radius: 20px;
+        font-size: 11px;
+    }
+
+    .result-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+    }
+
+    .result-item {
+        background: rgba(255, 255, 255, 0.04);
+        padding: 22px;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .result-item p {
+        color: #94a3b8;
+        font-size: 12px;
+        margin-bottom: 14px;
+    }
+
+    .result-item h3 {
+        font-size: 27px;
+        font-weight: 700;
+    }
+
+    .result-item.main-result h3 {
+        color: #38bdf8;
+    }
+
+    .error {
+        grid-column: 1 / -1;
+        padding: 16px;
+        background: rgba(239, 68, 68, 0.1);
+        color: #fca5a5;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        border-radius: 12px;
+        font-size: 13px;
+    }
+
+    /* Footer */
+
+    .footer {
+        text-align: center;
+        color: #64748b;
+        font-size: 12px;
+        margin-top: 40px;
+        line-height: 1.8;
+    }
+
+    .footer span {
+        color: #38bdf8;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 750px) {
+        .dashboard {
+            grid-template-columns: 1fr;
+        }
+
+        .result-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .result-card {
+            grid-column: auto;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .card {
+            padding: 25px;
+        }
+
+        .temperature {
+            font-size: 65px;
+        }
+
+        .weather-card::after {
+            font-size: 100px;
+        }
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+```
+<div class="container">
+
+    <header class="header">
+
+        <div class="logo">
+            <div class="logo-icon">☀</div>
+
+            <h2>Weather<span>Cast</span></h2>
+        </div>
+
+        <div class="status">
+            ● Prediction System
+        </div>
+
+    </header>
+
+
+    <main class="dashboard">
+
+        <!-- Weather Information -->
+
+        <section class="card weather-card">
+
+            <p class="section-label">Weather Overview</p>
+
+            <h1 class="city">Cairo</h1>
+
+            <p class="country">Egypt · Africa</p>
+
+            <div class="weather-display">
+
+                <div class="weather-symbol">🌤️</div>
+
+                <div>
+                    <div class="temperature">
+                        {% if predicted_temperature != None %}
+                            {{ predicted_temperature }}
+                        {% else %}
+                            --
+                        {% endif %}
+                        <span>°C</span>
+                    </div>
+
+                    <p class="weather-description">
+                        {% if predicted_temperature != None %}
+                            Predicted Average Temperature
+                        {% else %}
+                            Select a date to generate a prediction
+                        {% endif %}
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Forecast Form -->
+
+        <section class="card form-card">
+
+            <p class="section-label">Forecast Tool</p>
+
+            <h2>Predict Temperature</h2>
+
+            <p class="form-description">
+                Select a date to generate a temperature
+                prediction using our SARIMAX time-series model.
+            </p>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <label for="forecast_date">
+                    Select Forecast Date
+                </label>
+
+                <input
+                    type="date"
+                    id="forecast_date"
+                    name="forecast_date"
+                    min="2024-01-01"
+                    max="2025-12-31"
+                    value="{{ forecast_date }}"
+                    required
+                >
+
+                <button type="submit">
+                    Generate Prediction →
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- Prediction Results -->
+
+        {% if predicted_temperature != None %}
+
+            <section class="card result-card">
+
+                <div class="result-header">
+
+                    <h2>Prediction Results</h2>
+
+                    <span class="result-badge">
+                        ✓ Prediction Generated
+                    </span>
+
+                </div>
+
+                <div class="result-grid">
+
+                    <div class="result-item main-result">
+
+                        <p>Predicted Temperature</p>
+
+                        <h3>
+                            {{ predicted_temperature }} °C
+                        </h3>
+
+                    </div>
+
+                    <div class="result-item">
+
+                        <p>Lower Confidence Bound</p>
+
+                        <h3>
+                            {{ lower_bound }} °C
+                        </h3>
+
+                    </div>
+
+                    <div class="result-item">
+
+                        <p>Upper Confidence Bound</p>
+
+                        <h3>
+                            {{ upper_bound }} °C
+                        </h3>
+
+                    </div>
+
+                </div>
+
+                <p style="color: #64748b; font-size: 12px; margin-top: 22px;">
+                    Forecast Date: {{ forecast_date }}
+                    · 95% Confidence Interval
+                </p>
+
+            </section>
+
+        {% endif %}
+
+
+        {% if error %}
+
+            <div class="error">
+                {{ error }}
+            </div>
+
+        {% endif %}
+
+    </main>
+
+
+    <footer class="footer">
+
+        Powered by <span>SARIMAX</span> Time-Series Model
+
+        <br>
+
+        Weather Forecasting Project · Cairo, Egypt
+
+    </footer>
+
+</div>
+```
+
+</body>
+
+</html>
